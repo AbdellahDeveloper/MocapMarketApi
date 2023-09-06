@@ -18,7 +18,7 @@ def handle_request():
         JsonString.append({
           "title": previewVideo,
           "preview_video":"https://mocap.market"+previewVideo,
-          "download_link":"/download/"+previewVideo.split("/sites/default/files/")[1].split(".fbx")[0]+".fbx"
+          "download_link":"https://mocap.market"+"/download/"+previewVideo.split("/sites/default/files/")[1].split(".fbx")[0]+".fbx"
         })
     return json.dumps(JsonString)
 
