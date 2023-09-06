@@ -8,8 +8,8 @@ app = Flask(__name__)
 
 @app.route('/',methods=["POST","GET"])
 def handle_request():
-    
-    response = requests.get("https://mocap.market/")
+    url=str(request.args.get("url"))
+    response = requests.get(url)
     doc=BeautifulSoup(response.content,"html.parser")
     JsonString=[] 
     mydivs = doc.find_all("div", {"class": "views-row"})
