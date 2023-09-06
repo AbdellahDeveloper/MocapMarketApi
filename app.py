@@ -2,12 +2,13 @@ from flask import Flask
 from flask import request
 import requests
 from bs4 import BeautifulSoup
+import base64
 import json
 app = Flask(__name__)
 
 @app.route('/',methods=["POST","GET"])
 def handle_request():
-    url=str(request.args.get("url"))
+    url=base64.b64decode(str(request.args.get("url")))
     response = requests.get(url)
     doc=BeautifulSoup(response,"html.parser")
     JsonString=[] 
