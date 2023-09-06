@@ -10,7 +10,7 @@ app = Flask(__name__)
 def handle_request():
     
     response = requests.get("https://mocap.market/")
-    doc=BeautifulSoup(response,"html.parser")
+    doc=BeautifulSoup(response.content,"html.parser")
     JsonString=[] 
     mydivs = doc.find_all("div", {"class": "views-row"})
     for item in mydivs:
