@@ -16,7 +16,7 @@ def handle_request():
     for item in mydivs:
         previewVideo=str(item.find("article").find_all("div")[0].find("div").find("a").find("video")['src'])
         JsonString.append({
-          "title": item.find("article").find("div",attrs= {'class':'movement-title'}).find("a").find("span").text,
+          "title": str(item.find("article").find("div",attrs= {'class':'movement-title'}).find("a").find("span").text),
           "preview_video":"https://mocap.market"+previewVideo,
           "download_link":"https://mocap.market"+"/download/"+previewVideo.split("/sites/default/files/")[1].split(".fbx")[0]+".fbx"
         })
