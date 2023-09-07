@@ -10,7 +10,8 @@ app = Flask(__name__)
 def handle_request():
     url=str(request.args.get("url"))
     if(url!=''):
-      response = requests.get(url)
+        decodedurl=base64.decode(url)
+      response = requests.get(decodedurl)
       doc=BeautifulSoup(response.content,"html.parser")
       JsonString=[] 
       mydivs = doc.find_all("div", {"class": "views-row"})
