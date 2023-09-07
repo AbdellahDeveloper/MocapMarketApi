@@ -14,8 +14,10 @@ def handle_request():
         decodedurl=base64.b64decode(url)
         response = requests.get(decodedurl)
         doc=BeautifulSoup(response.content,"html.parser")
-        JsonString=[] 
-        mydivs = doc.find_all("div", {"class": "views-row"})
+        JsonString=[]
+        mydivs=[]
+        if doc.find_all("div", {"class": "views-row"}) is not None:
+          mydivs = doc.find_all("div", {"class": "views-row"})
         for item in mydivs:
             previewVideo=str(item.find("article").find_all("div")[0].find("div").find("a").find("video")['src'])
             JsonString.append({
