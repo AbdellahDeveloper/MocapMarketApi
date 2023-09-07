@@ -33,8 +33,8 @@ def handle_request():
         if doc.find_all("span", {"class": "facet-item__count"}) is not None:
           tags=doc.find_all("span", {"class": "facet-item__count"})
           for tag in tags:
-            tag_name=tag.parent.children[0].text
-            tag_count=tag.parent.children[1].text
+            tag_name=tag.parent.contents[0].text
+            tag_count=tag.parent.contents[1].text
             alltags.append({
               'tagName':str(tag_name),
               'tagCount': str(tag_count)
