@@ -24,7 +24,7 @@ def handle_request():
               "download_link":"https://mocap.market"+"/download/"+previewVideo.split("/sites/default/files/")[1].split(".fbx")[0]+".fbx"
            })
             lastindex=doc.find('li',attrs={'class':'pager__item--last'}).find('a')['href'].replace('?page=','')
-          return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex})
+        return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex})
       else:
         return 'no data available'
   except Exception:
