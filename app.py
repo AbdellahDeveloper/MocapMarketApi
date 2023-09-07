@@ -34,7 +34,7 @@ def handle_request():
           tags=doc.find_all("span", {"class": "facet-item__count"})
           for tag in tags:
             tag_name=tag.parent.contents[0].text
-            tag_count=tag.parent.contents[1].text
+            tag_count=tag.parent.contents[2].text
             alltags.append({
               'tagName':str(tag_name),
               'tagCount': str(tag_count)
