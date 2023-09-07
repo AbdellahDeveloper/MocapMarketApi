@@ -27,7 +27,7 @@ def handle_request():
         return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex})
       else:
         return 'no data available'
-  except Exception, e:
+  except Exception as e:
         return 'exeption, no data available'+str(s)
 if __name__ == '__main__':
     app.run()
