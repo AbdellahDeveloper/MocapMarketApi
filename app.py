@@ -5,11 +5,7 @@ from bs4 import BeautifulSoup
 import base64
 import json
 app = Flask(__name__)
-def isBase64(s):
-    try:
-        return base64.b64encode(base64.b64decode(s)) == s
-    except Exception:
-        return False
+
 @app.route('/',methods=["POST","GET"])
 def handle_request():
   try:
