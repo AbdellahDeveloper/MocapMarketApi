@@ -5,12 +5,16 @@ from bs4 import BeautifulSoup
 import base64
 import json
 app = Flask(__name__)
-
+def isBase64(s):
+    try:
+        return base64.b64encode(base64.b64decode(s)) == s
+    except Exception:
+        return False
 @app.route('/',methods=["POST","GET"])
 def handle_request():
     url=str(request.args.get("url"))
-    if(url!=''):
-        decodedurl=base64.decode(url)
+    if(url!='' && isBase64(url)):
+        decodedurl=base64.b64decode(url)
       response = requests.get(decodedurl)
       doc=BeautifulSoup(response.content,"html.parser")
       JsonString=[] 
