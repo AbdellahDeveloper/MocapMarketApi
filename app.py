@@ -28,6 +28,6 @@ def handle_request():
       else:
         return 'no data available'
   except Exception as e:
-        return 'exeption, no data available'+str(s)
+        return 'exeption, no data available'+str(e)
 if __name__ == '__main__':
     app.run()
