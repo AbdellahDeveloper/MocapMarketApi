@@ -11,7 +11,7 @@ def handle_request():
   try:
       url=str(request.args.get("url"))
       if(url!=''):
-          decodedurl=base64.b64decode(url)
+        decodedurl=base64.b64decode(url)
         response = requests.get(decodedurl)
         doc=BeautifulSoup(response.content,"html.parser")
         JsonString=[] 
