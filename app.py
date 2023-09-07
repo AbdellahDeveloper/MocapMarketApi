@@ -29,14 +29,16 @@ def handle_request():
         lastindex='0'
         if doc.find('li',attrs={'class':'pager__item--last'}) is not None:
           lastindex=doc.find('li',attrs={'class':'pager__item--last'}).find('a')['href'].replace('?page=','')
-        tags=doc.find_all("span", {"class": "facet-item__count"})
-        for tag in tags:
-          tag_name=tag.parent.children[0].text
-          tag_count=tag.parent.children[1].text
-          alltags.append({
-            'tagName':str(tag_name),
-            'tagCount': str(tag_count)
-          })
+        
+        if doc.find_all("span", {"class": "facet-item__count"}) is not None:
+          tags=doc.find_all("span", {"class": "facet-item__count"})
+          for tag in tags:
+            tag_name=tag.parent.children[0].text
+            tag_count=tag.parent.children[1].text
+            alltags.append({
+              'tagName':str(tag_name),
+              'tagCount': str(tag_count)
+            })
         return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex, 'alltags':alltags})
       else:
         return 'no data available'
