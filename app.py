@@ -16,6 +16,7 @@ def handle_request():
         doc=BeautifulSoup(response.content,"html.parser")
         JsonString=[]
         mydivs=[]
+        alltags=[]
         if doc.find_all("div", {"class": "views-row"}) is not None:
           mydivs = doc.find_all("div", {"class": "views-row"})
         for item in mydivs:
@@ -28,7 +29,15 @@ def handle_request():
         lastindex='0'
         if doc.find('li',attrs={'class':'pager__item--last'}) is not None:
           lastindex=doc.find('li',attrs={'class':'pager__item--last'}).find('a')['href'].replace('?page=','')
-        return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex})
+        tags=doc.find_all("span", {"class": "facet-item__count"})
+        for tag in tags:
+          tag_name=tag.parent.children[0].text
+          tag_count=tag.parent.children[1].text
+          alltags.append({
+            'tagName':str(tag_name),
+            'tagCount': str(tag_count)
+          })
+        return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex, 'alltags':alltags})
       else:
         return 'no data available'
   #except Exception as e:
