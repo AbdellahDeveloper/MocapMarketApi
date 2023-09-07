@@ -10,7 +10,7 @@ app = Flask(__name__)
 def handle_request():
   try:
       url=str(request.args.get("url"))
-      if(url!='' && base64.b64encode(base64.b64decode(s)) == url):
+      if(url!=''):
           decodedurl=base64.b64decode(url)
         response = requests.get(decodedurl)
         doc=BeautifulSoup(response.content,"html.parser")
