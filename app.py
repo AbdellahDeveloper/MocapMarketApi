@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/',methods=["POST","GET"])
 def handle_request():
-  try:
+  #try:
       url=str(request.args.get("url"))
       if(url!=''):
         decodedurl=base64.b64decode(url)
@@ -27,7 +27,7 @@ def handle_request():
         return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex})
       else:
         return 'no data available'
-  except Exception as e:
-        return 'exeption, no data available'+str(e)
+  #except Exception as e:
+   #     return 'exeption, no data available'+str(e)
 if __name__ == '__main__':
     app.run()
