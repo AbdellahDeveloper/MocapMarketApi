@@ -1,48 +1,71 @@
-from flask import Flask
-from flask import request
+from flask import Flask, request, Response
 import requests
 from bs4 import BeautifulSoup
-import base64
-import json
+
 app = Flask(__name__)
 
-@app.route('/',methods=["POST","GET"])
-def handle_request():
-  #try:
-      url=str(request.args.get("url"))
-      if(url!=''):
-        decodedurl=base64.b64decode(url)
-        response = requests.get(decodedurl)
-        doc=BeautifulSoup(response.content,"html.parser")
-        JsonString=[]
-        mydivs=[]
-        alltags=[]
-        if doc.find_all("div", {"class": "views-row"}) is not None:
-          mydivs = doc.find_all("div", {"class": "views-row"})
-        for item in mydivs:
-            previewVideo=str(item.find("article").find_all("div")[0].find("div").find("a").find("video")['src'])
-            JsonString.append({
-              "title": str(item.find("article").find("div",attrs= {'class':'movement-title'}).find("a").find("span").text),
-              "preview_video":"https://mocap.market"+previewVideo,
-              "download_link":"https://mocap.market"+"/download/"+previewVideo.split("/sites/default/files/")[1].split(".fbx")[0]+".fbx"
-            })
-        lastindex='0'
-        if doc.find('li',attrs={'class':'pager__item--last'}) is not None:
-          lastindex=doc.find('li',attrs={'class':'pager__item--last'}).find('a')['href'].split('page=')[1]
+TARGET_URL = "https://mafia-ejg.pages.dev"
+
+# Read the injection code from file
+with open('code_to_inject.js', 'r') as file:
+    INJECTION_CODE = file.read()
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def proxy(path):
+    # Construct the target URL
+    url = f"{TARGET_URL}/{path}"
+    
+    # Get the response from the target website
+    response = requests.get(url)
+    
+    # Get the content type from the original response
+    content_type = response.headers.get('Content-Type', 'text/html')
+    
+    # If it's a JavaScript file, return with correct MIME type
+    if path.endswith('.js'):
+        return Response(
+            response.content,
+            content_type='application/javascript',
+            headers={
+                'Access-Control-Allow-Origin': '*',
+                'Cache-Control': response.headers.get('Cache-Control', 'no-cache')
+            }
+        )
+    
+    # Inject JavaScript if we're at root path or in a room page and it's HTML
+    if ('text/html' in content_type) and (not path or path.startswith('room/')):
+        # Parse the HTML content
+        soup = BeautifulSoup(response.text, 'html.parser')
         
-        if doc.find_all("span", {"class": "facet-item__count"}) is not None:
-          tags=doc.find_all("span", {"class": "facet-item__count"})
-          for tag in tags:
-            tag_name=tag.parent.contents[0].text
-            tag_count=tag.parent.contents[2].text
-            alltags.append({
-              'tagName':str(tag_name),
-              'tagCount': str(tag_count)
-            })
-        return json.dumps({'AllAnimations':JsonString, 'tabscount':lastindex, 'alltags':alltags})
-      else:
-        return 'no data available'
-  #except Exception as e:
-   #     return 'exeption, no data available'+str(e)
+        # Create a new script tag
+        script_tag = soup.new_tag('script')
+        script_tag.string = INJECTION_CODE
+        
+        # Insert the script tag before the closing </body> tag
+        body_tag = soup.find('body')
+        if body_tag:
+            body_tag.append(script_tag)
+        else:
+            soup.append(script_tag)
+            
+        return Response(
+            str(soup),
+            content_type=content_type,
+            headers={
+                'Access-Control-Allow-Origin': '*'
+            }
+        )
+    
+    # For other paths, return the original content with original headers
+    return Response(
+        response.content,
+        content_type=content_type,
+        headers={
+            'Access-Control-Allow-Origin': '*',
+            'Cache-Control': response.headers.get('Cache-Control', 'no-cache')
+        }
+    )
+
 if __name__ == '__main__':
     app.run()
